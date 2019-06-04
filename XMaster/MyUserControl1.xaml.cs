@@ -32,8 +32,9 @@ namespace MyUserControl
     {
         APlayer aPlayer;
         public int PlayerNum { get; set; }
-        public int Timer { get; set }
+        public int Timer { get; set; }
         public DispatcherTimer gamepadTimer = new DispatcherTimer();
+        GamepadReading gp_lastreading = new GamepadReading();
 
         public MyUserControl1()
         {
@@ -44,15 +45,20 @@ namespace MyUserControl
             RegisterGamepads();
             GetGamepads();
             UpdateDisplay();
-            Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+            // Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
             gamepadTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             gamepadTimer.Tick += GamepadTimerEvent;
-
+            gamepadTimer.Start();
         }
 
         public void eh_DataChanged(Object sender, DataChangedEventArgs e)
         {
             UpdateDisplay();
+        }
+
+        public void RestartGame()
+        {
+            aPlayer.RestartGame();
         }
 
         private void ButtonAnswerClick(object sender, RoutedEventArgs e)
@@ -62,7 +68,7 @@ namespace MyUserControl
             UpdateDisplay();
         }
 
-        private void ButtonRestart_Click(object sender, RoutedEventArgs e)
+        public void ButtonRestart_Click(object sender, RoutedEventArgs e)
         {
             aPlayer.RestartGame();
             UpdateDisplay();
@@ -74,12 +80,20 @@ namespace MyUserControl
             {
                 Gamepad gamepad = myGamepads[PlayerNum - 1];
                 GamepadReading reading = gamepad.GetCurrentReading();
-                GamepadReading lastreading = reading;
                 textBlockButtons.Text = reading.Buttons.ToString();
                 
-                if (lastreading.Buttons != reading.Buttons)
+                if (!gp_lastreading.Equals(reading))
                 {
-                    reading.A
+                    if  ( (reading.Buttons == GamepadButtons.A ) && (gp_lastreading.Buttons != GamepadButtons.A ) )
+                        ButtonAnswerClick(buttonA, null);
+                    if ((reading.Buttons == GamepadButtons.B) && (gp_lastreading.Buttons != GamepadButtons.B))
+                        ButtonAnswerClick(buttonB, null);
+                    if ((reading.Buttons == GamepadButtons.X) && (gp_lastreading.Buttons != GamepadButtons.X))
+                        ButtonAnswerClick(buttonX, null);
+                    if ((reading.Buttons == GamepadButtons.Y) && (gp_lastreading.Buttons != GamepadButtons.Y))
+                        ButtonAnswerClick(buttonY, null);
+
+                    gp_lastreading = reading;
                 }
             }
         }

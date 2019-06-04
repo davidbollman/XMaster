@@ -20,11 +20,11 @@
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <dc:MyUserControl1  Grid.Row="0" Grid.Column="0" IsEnabled="False" PlayerNum="1"/>
-        <dc:MyUserControl1  Grid.Row="0" Grid.Column="1" IsEnabled="False" PlayerNum="2"/>
-        <dc:MyUserControl1  Grid.Row="1" Grid.Column="0" IsEnabled="False" PlayerNum="3"/>
-        <dc:MyUserControl1  Grid.Row="1" Grid.Column="1" IsEnabled="False" PlayerNum="4"/>
-
+        <dc:MyUserControl1 x:Name="Gamer1" Grid.Row="0" Grid.Column="0" IsEnabled="False" PlayerNum="1"/>
+        <dc:MyUserControl1 x:Name="Gamer2" Grid.Row="0" Grid.Column="1" IsEnabled="False" PlayerNum="2"/>
+        <dc:MyUserControl1 x:Name="Gamer3" Grid.Row="1" Grid.Column="0" IsEnabled="False" PlayerNum="3"/>
+        <dc:MyUserControl1 x:Name="Gamer4" Grid.Row="1" Grid.Column="1" IsEnabled="False" PlayerNum="4"/>
+        <Button x:Name="buttonRestartAll" Content="RestartAll" Margin="10,10,0,0" VerticalAlignment="Top" Click="ButtonRestartAll_Click"/>
     </Grid>
 
 </Page>
