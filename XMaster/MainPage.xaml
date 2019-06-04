@@ -1,0 +1,31 @@
+﻿<Page
+    x:Class="XMaster.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ 
+    xmlns:local="using:XMaster"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:dc ="using:MyUserControl"
+    AllowFocusOnInteraction="False"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <dc:MyUserControl1  Grid.Row="0" Grid.Column="0" IsEnabled="False" PlayerNum="1"/>
+        <dc:MyUserControl1  Grid.Row="0" Grid.Column="1" IsEnabled="False" PlayerNum="2"/>
+        <dc:MyUserControl1  Grid.Row="1" Grid.Column="0" IsEnabled="False" PlayerNum="3"/>
+        <dc:MyUserControl1  Grid.Row="1" Grid.Column="1" IsEnabled="False" PlayerNum="4"/>
+
+    </Grid>
+
+</Page>
+    
