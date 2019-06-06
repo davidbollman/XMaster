@@ -13,19 +13,21 @@
 
     <Grid >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition x:Name="Col1"></ColumnDefinition>
+            <ColumnDefinition x:Name="Col2" Width="1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition x:Name="Row1"></RowDefinition>
+            <RowDefinition x:Name="Row2" Height="0*"></RowDefinition>
         </Grid.RowDefinitions>
-        <dc:MyUserControl1 x:Name="Gamer1" Grid.Row="0" Grid.Column="0" IsEnabled="False" PlayerNum="1"/>
-        <dc:MyUserControl1 x:Name="Gamer2" Grid.Row="0" Grid.Column="1" IsEnabled="False" PlayerNum="2"/>
-        <dc:MyUserControl1 x:Name="Gamer3" Grid.Row="1" Grid.Column="0" IsEnabled="False" PlayerNum="3"/>
-        <dc:MyUserControl1 x:Name="Gamer4" Grid.Row="1" Grid.Column="1" IsEnabled="False" PlayerNum="4"/>
-        <Button x:Name="buttonRestartAll" Content="RestartAll" Margin="10,10,0,0" VerticalAlignment="Top" Click="ButtonRestartAll_Click"/>
+        <dc:MyUserControl1 x:Name="Gamer1" Grid.Row="0" Grid.Column="0" IsEnabled="False" PlayerNum="1" Visibility="Visible"/>
+        <dc:MyUserControl1 x:Name="Gamer2" Grid.Row="0" Grid.Column="1" IsEnabled="False" PlayerNum="2" Visibility="Visible"/>
+        <dc:MyUserControl1 x:Name="Gamer3" Grid.Row="1" Grid.Column="0" IsEnabled="False" PlayerNum="3" Visibility="Collapsed"/>
+        <dc:MyUserControl1 x:Name="Gamer4" Grid.Row="1" Grid.Column="1" IsEnabled="False" PlayerNum="4" Visibility="Collapsed"/>
+        <Button x:Name="buttonRestartAll" Content="RestartAll" Margin="10,10,0,0" VerticalAlignment="Top" Click="ButtonRestartAll_Click" Visibility="Collapsed"/>
     </Grid>
+    
+
 
 </Page>
     

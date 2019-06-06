@@ -35,14 +35,15 @@ namespace XMaster
         public MainPage()
         {
             this.InitializeComponent();
+            
         }
 
         private void ButtonRestartAll_Click(object sender, RoutedEventArgs e)
         {
             Gamer1.RestartGame();
             Gamer2.RestartGame();
-            Gamer3.RestartGame();
-            Gamer4.RestartGame();
+            //Gamer3.RestartGame();
+            //Gamer4.RestartGame();
         }
 
     }

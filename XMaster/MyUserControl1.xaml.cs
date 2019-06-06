@@ -121,6 +121,14 @@ namespace MyUserControl
             this.buttonY.IsEnabled = aPlayer.dispatcherTimer.IsEnabled;
             this.textBlockPlayer.Text = PlayerNum.ToString();
 
+            this.ProgBar.Value = (( aPlayer.p1.score <= 0 ) ? 0 : aPlayer.p1.score) * 100/7;
+            //this.ProgBar.MaxWidth = aPlayer.AnswersToWin;
+            //this.ProgBar.MinWidth = 0;
+
+
+            double dscore = (((aPlayer.p1.correct * 100.0) / (aPlayer.p1.incorrect + aPlayer.p1.correct)));
+            dscore = (dscore > 0 ) ? dscore: 0;
+            this.textBlockPercent.Text = "Score: " + (dscore).ToString("N2") + " %";
             this.textBlockScore.Foreground = aPlayer.AnswerColor;
 
             if ((aPlayer.WrongAnswers.Count() > 0) && (this.listBox.Items.Count != aPlayer.WrongAnswers.Count))
@@ -131,6 +139,16 @@ namespace MyUserControl
             if (aPlayer.WrongAnswers.Count() == 0)
             {
                 this.listBox.Items.Clear();
+            }
+
+            if ((aPlayer.p1.showresults) && (this.myWebView.Visibility == Visibility.Collapsed))
+            {
+                this.myWebView.Visibility = Visibility.Visible;
+                this.myWebView.NavigateToString(aPlayer.MakeResultsPage());
+            }
+            else if (!(aPlayer.p1.showresults) && (this.myWebView.Visibility == Visibility.Visible))
+            {
+                this.myWebView.Visibility = Visibility.Collapsed;
             }
 
         }
@@ -153,7 +171,7 @@ namespace MyUserControl
                     {
                         // This code assumes that you're interested in all gamepads.
                         myGamepads.Add(gamepad);
-                        if ((myGamepads.Count() >= PlayerNum) && gamepad == myGamepads[PlayerNum - 1])
+                        if (PlayerNum > 0 && (myGamepads.Count() >= PlayerNum) && gamepad == myGamepads[PlayerNum - 1])
                         {
                             var ignored = Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () => { IsEnabled = true; });
                         }
@@ -205,7 +223,7 @@ namespace MyUserControl
 
         }
 
-        private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
+/*        private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
             if (args.Handled)
             {
@@ -234,7 +252,7 @@ namespace MyUserControl
                 }
             }
         }
-
+        */
 
     }
 
@@ -259,6 +277,10 @@ namespace MyUserControl
             public int score;
             public int timer;
             public int besttime;
+            
+
+            public int[,,] answers;
+            public bool showresults;
 
             public string message;
         }
@@ -267,7 +289,7 @@ namespace MyUserControl
 
 
 
-        static int AnswersToWin = 7;
+        public int AnswersToWin = 7;
         public int TimeToWin = 60;
 
         public Player p1 = new Player();
@@ -287,10 +309,12 @@ namespace MyUserControl
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             //            this.textBlockScore.Foreground = AnswerColor;
+            
+            p1.answers = new int[9, 9, 2];
 
-        }
+    }
 
-        public void UpdateDisplay()
+    public void UpdateDisplay()
         {
             OnDataChanged(new DataChangedEventArgs()); ;
         }
@@ -305,8 +329,11 @@ namespace MyUserControl
             p1.correct = 0;
             p1.incorrect = 0;
             p1.message = "";
+            p1.showresults = false;
             //this.listBox.Items.Clear();
             WrongAnswers.Clear();
+            ClearAnswers(); 
+            
 
             GetQuestion();
             UpdateDisplay();
@@ -327,6 +354,7 @@ namespace MyUserControl
             p1.suggestion2 = (r == 2) ? p1.ans : (rnd.Next(p1.min, p1.max) * rnd.Next(p1.min, p1.max));
             p1.suggestion3 = (r == 3) ? p1.ans : (rnd.Next(p1.min, p1.max) * rnd.Next(p1.min, p1.max));
             p1.suggestion4 = (r == 4) ? p1.ans : (rnd.Next(p1.min, p1.max) * rnd.Next(p1.min, p1.max));
+
         }
 
         public void StartTimer()
@@ -340,6 +368,42 @@ namespace MyUserControl
             UpdateDisplay();
         }
 
+        public string MakeResultsPage()
+        {
+            string output = "";
+            output += "<table border=1>" +
+                "<th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></th>";
+
+            for (int i = 0; i < 9; i++)
+            {
+                output += "<tr><td>" + (i+1).ToString() + "</td>";
+
+                for (int j = 0; j < 9; j++)
+                {
+                    string color = (p1.answers[i, j, 1] == 0 && p1.answers[i, j, 0] > 0) ? "springgreen" : "Yellow";
+                    color = ( (p1.answers[i, j, 1] - p1.answers[i, j, 0] ) > 0) ? "Red" : color;
+                    color = ( (p1.answers[i, j, 1] + p1.answers[i, j, 0] ) == 0) ? "White" : color;
+
+                    output += "<td bgcolor='"+color+"'>"+ p1.answers[i,j,0].ToString() + '/' + (p1.answers[i,j,0]+ p1.answers[i,j,1]).ToString() + "</td>";
+
+                }
+                output += "</tr>";
+            }
+            output += "</table>";
+            return output;
+        }
+
+        public void ClearAnswers()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    p1.answers[i,j,0] = p1.answers[i,j,1] = 0;
+                }
+            }
+        }
+
         public void AnswerClick(int answer)
         {
             if (answer == p1.ans)
@@ -347,11 +411,13 @@ namespace MyUserControl
 
                 p1.correct++;
                 p1.score++;
+                p1.answers[p1.x-1, p1.y-1, 0]++;
                 AnswerColor.Color = Colors.Green;
             }
             else
             {
                 p1.incorrect++;
+                p1.answers[p1.x-1, p1.y-1, 1]++;
                 if (p1.score > 0)
                     p1.score--;
                 //  this.listBox.Items.Add(p1.x + " X " + p1.y + " = " + p1.ans);
@@ -375,6 +441,7 @@ namespace MyUserControl
                 {
                     p1.message = "Keep Trying, you can do it!";
                 }
+                p1.showresults = true;
                 dispatcherTimer.Stop();
             }
             else
